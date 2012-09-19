@@ -1,4 +1,3 @@
-
 article,
 aside,
 details,
@@ -12,61 +11,10 @@ section {
   display: block;
 }
 
-audio,
-canvas,
-video {
-  display: inline-block;
-  *display: inline;
-  *zoom: 1;
-}
-
-audio:not([controls]) {
-  display: none;
-}
-
 html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
-}
-
-a:focus {
-  outline: thin dotted #333;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-a:hover,
-a:active {
-  outline: 0;
-}
-
-sub,
-sup {
-  position: relative;
-  font-size: 75%;
-  line-height: 0;
-  vertical-align: baseline;
-}
-
-sup {
-  top: -0.5em;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-img {
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-  border: 0;
-  -ms-interpolation-mode: bicubic;
-}
-
-#map_canvas img {
-  max-width: none;
 }
 
 button,
@@ -96,55 +44,6 @@ input[type="reset"],
 input[type="submit"] {
   cursor: pointer;
   -webkit-appearance: button;
-}
-
-input[type="search"] {
-  -webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
-  -webkit-appearance: textfield;
-}
-
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-}
-
-textarea {
-  overflow: auto;
-  vertical-align: top;
-}
-
-.clearfix {
-  *zoom: 1;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  line-height: 0;
-  content: "";
-}
-
-.clearfix:after {
-  clear: both;
-}
-
-.hide-text {
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
-
-.input-block-level {
-  display: block;
-  width: 100%;
-  min-height: 30px;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
 }
 
 body {
@@ -205,8 +104,9 @@ input[type='number'] {
   padding: 0;
   overflow: hidden;
   background: #eee;
-  padding: 5px 10px;
+  padding: 0 10px;
   margin-left: 10px;
+  line-height: 35px;
 }
 #form fieldset:first-child {
   margin-left: 0;
@@ -229,7 +129,7 @@ input[type='number'] {
 
 .group {
   clear: left;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .swatch {
@@ -237,7 +137,6 @@ input[type='number'] {
   position: relative;
   float: left;
   width: 10%;
-  height: 120px;
   margin-left: 1.25%;
   margin-bottom: 10px;
 }
@@ -247,20 +146,27 @@ input[type='number'] {
 .swatch .col {
   display: block;
   width: 100%;
-  height: 100%;
+  height: 120px;
+  transition: background 1s;
+  -webkit-transition: background 1s;
 }
 
 .swatch .details {
   position: absolute;
-  display: none;
+  opacity: 0;
   top: 30px;
   left: 0px;
   right: 0px;
   bottom: 30px;
+  white-space: nowrap;
+  overflow: hidden;
   background: rgba(255, 255, 255, .6);
+  transition: opacity 1s;
+  -webkit-transition: opacity 1s;
 }
-.swatch:hover .details {
-  display: block;
+.swatch:hover .details,
+.show-labels .swatch .details {
+  opacity: 1;
 }
 
 .swatch .rgb,
@@ -273,15 +179,19 @@ input[type='number'] {
   color: black;
 }
 
+.swatch a:hover {
+  box-shadow: 2px -2px 0 white, -2px 2px 0 white, -2px -2px 0 white, 2px 2px 0 white, 4px -4px 0 blue, -4px 4px 0 blue, -4px -4px 0 blue, 4px 4px 0 blue;
+  transition: box-shadow .5s;
+}
+
 .swatch:nth-child(8n+5) {
   box-shadow: 2px -2px 0 white, -2px 2px 0 white, -2px -2px 0 white, 2px 2px 0 white, 4px -4px 0 black, -4px 4px 0 black, -4px -4px 0 black, 4px 4px 0 black;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 980px) {
   .swatch {
     width: 18%;
     margin-left: 2%;
-    height: 80px;
   }
   
   .swatch:nth-child(8n+2),
@@ -291,6 +201,23 @@ input[type='number'] {
     display: none;
   }
   
+  .swatch .col {
+    height: 80px;
+  }
+  
+  .swatch .details {
+    opacity: 1;
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+
+  #labels-fieldset {
+    display: none;
+  }
+
   #form fieldset {
     float: none;
     clear: left;
@@ -298,7 +225,7 @@ input[type='number'] {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 550px) {
   #header h1 {
     font-size: 18px;
     padding: 10px;
@@ -324,5 +251,9 @@ input[type='number'] {
     line-height: 30px;
     white-space: nowrap;
     background: #eee;
+  }
+  
+  .swatch .details {
+    display: none;
   }
 }

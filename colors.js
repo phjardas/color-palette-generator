@@ -252,6 +252,13 @@ groups.push({
 // ========== Main
 
 $(function() {
+  function updateAll(c) {
+    setRGB(c);
+    setHSL(c);
+    setHex(c);
+    update(c);
+  }
+  
   function updateRGB() {
     var r = parseInt($('#r').val());
     var g = parseInt($('#g').val());
@@ -283,6 +290,8 @@ $(function() {
     var rgb = col.rgb();
     var hsl = col.hsl();
     
+    setHash(rgb);
+
     for (var i in groups) {
       var group = groups[i];
       
@@ -298,7 +307,16 @@ $(function() {
         s.find('.rgb').text('rgb(' + srgb.r + ', ' + srgb.g + ', ' + srgb.b + ')');
         s.find('.hsl').text('hsl(' + Math.round(shsl.h) + ', ' + Math.round(shsl.s) + ', ' + Math.round(shsl.l) + ')');
         s.find('.hex').text('#' + shex);
+        s.unbind('click');
+        s.click(getUpdateHandler(c));
       }
+    }
+  }
+  
+  function getUpdateHandler(col) {
+    return function () {
+      updateAll(col);
+      return false;
     }
   }
   
@@ -320,6 +338,18 @@ $(function() {
     $('#hex').val(col.hex());
   }
   
+  function loadHash() {
+    var hash = location.hash.substr(1);
+    
+    if (hash) {
+      return parseHex(hash);
+    }
+  }
+  
+  function setHash(col) {
+    location.hash = col ? ('#' + col.hex()) : '';
+  }
+  
   var groupsContainer = $('#groups');
   
   for (var i in groups) {
@@ -330,7 +360,7 @@ $(function() {
     var s = $('<div>').addClass('swatches');
     
     for (var k in group.operations) {
-      $('<div>').addClass('swatch').attr('id', 'swatch-' +group.id + '-' + k)
+      $('<a>').addClass('swatch').attr('id', 'swatch-' +group.id + '-' + k).attr('href', '#')
         .append($('<span>').addClass('col'))
         .append(
           $('<div>').addClass('details')
@@ -345,11 +375,6 @@ $(function() {
     g.appendTo(groupsContainer);
   }
 
-  $('#r').val(Math.floor((Math.random() * 255) + 1));
-  $('#g').val(Math.floor((Math.random() * 255) + 1));
-  $('#b').val(Math.floor((Math.random() * 255) + 1));
-  updateRGB();
-
   $('#color-selector-form').submit(function() {
     return false;
   });
@@ -357,4 +382,20 @@ $(function() {
   $('#r, #g, #b').change(updateRGB).keyup(updateRGB);
   $('#h, #s, #l').change(updateHSL).keyup(updateHSL);
   $('#hex').change(updateHex).keyup(updateHex);
+  
+  $('#labels').change(function() {
+    var show = $(this).attr('checked') == 'checked';
+    $('body')[show ? 'addClass' : 'removeClass']('show-labels');
+  });
+
+  var col = loadHash();
+  
+  if (col) {
+    updateAll(col);
+  } else {
+    $('#r').val(Math.floor((Math.random() * 255) + 1));
+    $('#g').val(Math.floor((Math.random() * 255) + 1));
+    $('#b').val(Math.floor((Math.random() * 255) + 1));
+    updateRGB();
+  }
 });
