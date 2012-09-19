@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Color Palette Generator</title>
+    <link rel="stylesheet" href="colors.css">
+    <script src="jquery-1.8.0.min.js"></script>
+    <script src="colors.js"></script>
+  </head>
+  <body>
+    <header id="header">
+      <h1>Color Palette Generator</h1>
+    </header>
+    <section id="content">
+      <form id="form">
+        <fieldset>
+          <div><label for="r">Red    </label> <input type="number" name="r" id="r" min="0" max="255"></div>
+          <div><label for="g">Green  </label> <input type="number" name="g" id="g" min="0" max="255"></div>
+          <div><label for="b">Blue   </label> <input type="number" name="b" id="b" min="0" max="255"></div>
+        </fieldset>
+        <fieldset>
+          <div><label for="h">Hue    </label> <input type="number" name="h" id="h" min="0" max="255"></div>
+          <div><label for="s">Sat.   </label> <input type="number" name="s" id="s" min="0" max="255"></div>
+          <div><label for="l">Light. </label> <input type="number" name="l" id="l" min="0" max="255"></div>
+        </fieldset>
+        <div><label for="hex">Hex  </label> <input type="text" name="hex" id="hex" size="6" readonly></div>
+      </form>
+      
+      <div id="swatches">
+      </div>
+    </section>
+    <footer id="footer">
+      Footer
+    </footer>
+  </body>
+</html>
