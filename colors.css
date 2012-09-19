@@ -205,14 +205,14 @@ input[type='number'] {
   padding: 0;
   overflow: hidden;
   background: #eee;
-  padding: 10px;
+  padding: 5px 10px;
   margin-left: 10px;
 }
 #form fieldset:first-child {
   margin-left: 0;
 }
 #form div {
-  margin-left: 10px;
+  margin-left: 15px;
   float: left;
   overflow: hidden;
 }
@@ -220,7 +220,7 @@ input[type='number'] {
   margin-left: 0;
 }
 #form label {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 #form input[type='number'],
 #form input[type='text'] {
@@ -271,4 +271,10 @@ input[type='number'] {
   text-align: center;
   line-height: 20px;
   color: black;
+}
+
+#swatch-saturation-4,
+#swatch-brightness-4,
+#swatch-hue-4 {
+  box-shadow: 2px -2px 0 white, -2px 2px 0 white, -2px -2px 0 white, 2px 2px 0 white, 4px -4px 0 black, -4px 4px 0 black, -4px -4px 0 black, 4px 4px 0 black;
 }

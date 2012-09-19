@@ -121,6 +121,13 @@ var HSL = function(h, s, l) {
   }
 }
 
+function parseHex(hex) {
+  var r = parseInt(hex.substr(0, 2), 16);
+  var g = parseInt(hex.substr(2, 2), 16);
+  var b = parseInt(hex.substr(4, 2), 16);
+  
+  return new RGB(r, g, b);
+}
 
 
 // ========== Color Operations
@@ -245,18 +252,36 @@ groups.push({
 // ========== Main
 
 $(function() {
-  function update() {
+  function updateRGB() {
     var r = parseInt($('#r').val());
     var g = parseInt($('#g').val());
     var b = parseInt($('#b').val());
-    
-    var rgb = new RGB(r, g, b);
-    var hsl = rgb.hsl();
-    
-    $('#h').val(Math.round(hsl.h));
-    $('#s').val(Math.round(hsl.s));
-    $('#l').val(Math.round(hsl.l));
-    $('#hex').val(rgb.hex());
+    var c = new RGB(r, g, b);
+    setHSL(c);
+    setHex(c);
+    update(c);
+  }
+
+  function updateHSL() {
+    var h = parseInt($('#h').val());
+    var s = parseInt($('#s').val());
+    var l = parseInt($('#l').val());
+    var c = new HSL(h, s, l);
+    setRGB(c);
+    setHex(c);
+    update(c);
+  }
+
+  function updateHex() {
+    var c = parseHex($('#hex').val());
+    setRGB(c);
+    setHSL(c);
+    update(c);
+  }
+
+  function update(col) {
+    var rgb = col.rgb();
+    var hsl = col.hsl();
     
     for (var i in groups) {
       var group = groups[i];
@@ -264,10 +289,10 @@ $(function() {
       for (var k in group.operations) {
         var op = group.operations[k];
         var s = $('#swatch-' + group.id + '-' + k);
-        var col = op.apply(hsl);
-        var srgb = col.rgb();
-        var shsl = col.hsl();
-        var shex = col.hex();
+        var c = op.apply(hsl);
+        var srgb = c.rgb();
+        var shsl = c.hsl();
+        var shex = c.hex();
         
         s.find('.col').css('background', '#' + shex);
         s.find('.rgb').text('rgb(' + srgb.r + ', ' + srgb.g + ', ' + srgb.b + ')');
@@ -275,26 +300,24 @@ $(function() {
         s.find('.hex').text('#' + shex);
       }
     }
-    
-    /*
-    set(0, rgb);
-    set(1, hsl.add(30, 0, 0));
-    set(2, hsl.add(60, 0, 0));
-    set(3, hsl.add(90, 0, 0));
-    set(7, hsl.add(120, 0, 0));
-    set(11, hsl.add(150, 0, 0));
-    set(15, hsl.add(180, 0, 0));
-    set(14, hsl.add(210, 0, 0));
-    set(13, hsl.add(240, 0, 0));
-    set(12, hsl.add(270, 0, 0));
-    set(8, hsl.add(300, 0, 0));
-    set(4, hsl.add(330, 0, 0));
-
-    set(5, hsl.multiply(1, .25, 1));
-    set(6, hsl.add(90, 0, 0).multiply(1, .25, 1));
-    set(9, hsl.add(270, 0, 0).multiply(1, .25, 1));
-    set(10, hsl.add(180, 0, 0).multiply(1, .25, 1));
-    */
+  }
+  
+  function setRGB(col) {
+    var rgb = col.rgb();
+    $('#r').val(Math.round(rgb.r));
+    $('#g').val(Math.round(rgb.g));
+    $('#b').val(Math.round(rgb.b));
+  }
+  
+  function setHSL(col) {
+    var hsl = col.hsl();
+    $('#h').val(Math.round(hsl.h));
+    $('#s').val(Math.round(hsl.s));
+    $('#l').val(Math.round(hsl.l));
+  }
+  
+  function setHex(col) {
+    $('#hex').val(col.hex());
   }
   
   var groupsContainer = $('#groups');
@@ -320,21 +343,18 @@ $(function() {
     
     s.appendTo(g);
     g.appendTo(groupsContainer);
-    
-    // var s = $('<div>').attr('id', 'swatch-' + i).addClass('swatch');
-    // s.append($('<span>').addClass('col'));
-    // $('<div>').addClass('details').append($('<span>').addClass('rgb')).append($('<span>').addClass('hsl')).append($('<span>').addClass('hex')).appendTo(s);
-    // swatches.append(s);
   }
 
   $('#r').val(Math.floor((Math.random() * 255) + 1));
   $('#g').val(Math.floor((Math.random() * 255) + 1));
   $('#b').val(Math.floor((Math.random() * 255) + 1));
-  update();
+  updateRGB();
 
   $('#color-selector-form').submit(function() {
     return false;
   });
   
-  $('#r, #g, #b').change(update);
+  $('#r, #g, #b').change(updateRGB).keyup(updateRGB);
+  $('#h, #s, #l').change(updateHSL).keyup(updateHSL);
+  $('#hex').change(updateHex).keyup(updateHex);
 });
