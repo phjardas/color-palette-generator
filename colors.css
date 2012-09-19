@@ -172,12 +172,13 @@ input[type='number'] {
 
 
 #header {
-  padding: 20px;
+  border-bottom: 1px solid #999;
 }
 #header h1 {
+  padding: 20px 20px 15px 20px;
   margin: 0;
+  border-bottom: 1px solid #999;
 }
-
 #footer {
   background: #ccc;
   border-top: 1px solid #999;
@@ -193,53 +194,55 @@ input[type='number'] {
 }
 
 #form {
-  float: right;
-  background: #666;
-  border: 2px solid #333;
-  border-radius: 5px;
-  padding: 10px;
-  color: #eee;
+  background: #ccc;
+  color: #333;
+  padding: 10px 20px;
+  overflow: hidden;
 }
 #form fieldset {
   float: left;
   border: none;
   padding: 0;
-  margin-left: 20px;
   overflow: hidden;
-  margin-bottom: 20px;
+  background: #eee;
+  padding: 10px;
+  margin-left: 10px;
 }
 #form fieldset:first-child {
   margin-left: 0;
 }
 #form div {
-  margin-top: 10px;
-  clear: both;
+  margin-left: 10px;
+  float: left;
   overflow: hidden;
 }
 #form div:first-child {
-  margin-top: 0;
+  margin-left: 0;
 }
 #form label {
-  float: left;
   margin-right: 10px;
 }
 #form input[type='number'],
 #form input[type='text'] {
-  float: right;
   width: 60px;
+}
+
+.group {
+  clear: left;
+  overflow: hidden;
 }
 
 .swatch {
   display: block;
   position: relative;
   float: left;
-  width: 120px;
+  width: 10%;
   height: 120px;
-  margin-right: 10px;
+  margin-left: 1.25%;
   margin-bottom: 10px;
 }
-.swatch:nth-child(4n+1) {
-  clear: left;
+.swatch:first-child {
+  margin-left: 0;
 }
 .swatch .col {
   display: block;

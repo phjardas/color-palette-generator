@@ -1,3 +1,5 @@
+// ========== Color Classes
+
 var RGB = function(r, g, b) {
   this.r = r;
   this.g = g;
@@ -62,26 +64,6 @@ var HSL = function(h, s, l) {
   this.s = s;
   this.l = l;
   
-  this.add = function(h, s, l) {
-    var h = (this.h + h) % 360;
-    while (h < 0) h += 360;
-    
-    s = Math.max(Math.min(this.s + s, 100), 0);
-    l = Math.max(Math.min(this.l + l, 100), 0);
-    
-    return new HSL(h, s, l);
-  }
-
-  this.multiply = function(h, s, l) {
-    var h = (this.h * h) % 360;
-    while (h < 0) h += 360;
-    
-    s = Math.max(Math.min(this.s * s, 100), 0);
-    l = Math.max(Math.min(this.l * l, 100), 0);
-    
-    return new HSL(h, s, l);
-  }
-  
   this.hsl = function() {
     return this;
   }
@@ -140,18 +122,129 @@ var HSL = function(h, s, l) {
 }
 
 
-$(function() {
-  function set(index, col) {
-    var hex = '#' + col.hex();
-    var rgb = col.rgb();
-    var hsl = col.hsl();
-                                                
-    $('#swatch-' + index + ' .col').css('background', hex);
-    $('#swatch-' + index + ' .rgb').text('rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')');
-    $('#swatch-' + index + ' .hsl').text('hsl(' + Math.round(hsl.h) + ', ' + Math.round(hsl.s) + ', ' + Math.round(hsl.l) + ')');
-    $('#swatch-' + index + ' .hex').text(hex);
-  }
 
+// ========== Color Operations
+
+var NoOp = function() {
+  this.apply = function(col) {
+    return col;
+  }
+}
+
+var ShiftHue = function(angle) {
+  this.angle = angle;
+  
+  this.apply = function(col) {
+    var hsl = col.hsl();
+    var h = (hsl.h + this.angle) % 360;
+    while (h < 0) h += 360;
+    
+    return new HSL(h, hsl.s, hsl.l);
+  }
+}
+
+var Desaturate = function(factor) {
+  this.factor = factor;
+  
+  this.apply = function(col) {
+    var hsl = col.hsl();
+    s = Math.max(Math.min(hsl.s * this.factor, 100), 0);
+    
+    return new HSL(hsl.h, s, hsl.l);
+  }
+}
+
+var Saturate = function(factor) {
+  this.factor = factor;
+  
+  this.apply = function(col) {
+    var hsl = col.hsl();
+    s = 100 - Math.max(Math.min((100 - hsl.s) * this.factor, 100), 0);
+    
+    return new HSL(hsl.h, s, hsl.l);
+  }
+}
+
+var Darken = function(factor) {
+  this.factor = factor;
+  
+  this.apply = function(col) {
+    var hsl = col.hsl();
+    l = Math.max(Math.min(hsl.l * this.factor, 100), 0);
+    
+    return new HSL(hsl.h, hsl.s, l);
+  }
+}
+
+var Brighten = function(factor) {
+  this.factor = factor;
+  
+  this.apply = function(col) {
+    var hsl = col.hsl();
+    l = 100 - Math.max(Math.min((100 - hsl.l) * this.factor, 100), 0);
+    
+    return new HSL(hsl.h, hsl.s, l);
+  }
+}
+
+
+
+// ========== Groups
+
+var groups = [];
+
+groups.push({
+  id: 'saturation',
+  title: 'Saturation',
+  operations: [
+    new Desaturate(0/8),
+    new Desaturate(2/8),
+    new Desaturate(4/8),
+    new Desaturate(6/8),
+    new NoOp(8/8),
+    new Saturate(6/8),
+    new Saturate(4/8),
+    new Saturate(2/8),
+    new Saturate(0/8)
+  ]
+});
+
+groups.push({
+  id: 'brightness',
+  title: 'Brightness',
+  operations: [
+    new Darken(1/8),
+    new Darken(2/8),
+    new Darken(4/8),
+    new Darken(6/8),
+    new NoOp(8/8),
+    new Brighten(6/8),
+    new Brighten(4/8),
+    new Brighten(2/8),
+    new Brighten(1/8)
+  ]
+});
+
+groups.push({
+  id: 'hue',
+  title: 'Hue',
+  operations: [
+    new ShiftHue(-180),
+    new ShiftHue(-135),
+    new ShiftHue(-90),
+    new ShiftHue(-45),
+    new ShiftHue(0),
+    new ShiftHue(45),
+    new ShiftHue(90),
+    new ShiftHue(135),
+    new ShiftHue(180)
+  ]
+});
+
+
+// ========== Main
+
+$(function() {
   function update() {
     var r = parseInt($('#r').val());
     var g = parseInt($('#g').val());
@@ -165,6 +258,25 @@ $(function() {
     $('#l').val(Math.round(hsl.l));
     $('#hex').val(rgb.hex());
     
+    for (var i in groups) {
+      var group = groups[i];
+      
+      for (var k in group.operations) {
+        var op = group.operations[k];
+        var s = $('#swatch-' + group.id + '-' + k);
+        var col = op.apply(hsl);
+        var srgb = col.rgb();
+        var shsl = col.hsl();
+        var shex = col.hex();
+        
+        s.find('.col').css('background', '#' + shex);
+        s.find('.rgb').text('rgb(' + srgb.r + ', ' + srgb.g + ', ' + srgb.b + ')');
+        s.find('.hsl').text('hsl(' + Math.round(shsl.h) + ', ' + Math.round(shsl.s) + ', ' + Math.round(shsl.l) + ')');
+        s.find('.hex').text('#' + shex);
+      }
+    }
+    
+    /*
     set(0, rgb);
     set(1, hsl.add(30, 0, 0));
     set(2, hsl.add(60, 0, 0));
@@ -182,14 +294,37 @@ $(function() {
     set(6, hsl.add(90, 0, 0).multiply(1, .25, 1));
     set(9, hsl.add(270, 0, 0).multiply(1, .25, 1));
     set(10, hsl.add(180, 0, 0).multiply(1, .25, 1));
+    */
   }
   
-  var swatches = $('#swatches');
-  for (var i = 0; i < 16; i++) {
-    var s = $('<div>').attr('id', 'swatch-' + i).addClass('swatch');
-    s.append($('<span>').addClass('col'));
-    $('<div>').addClass('details').append($('<span>').addClass('rgb')).append($('<span>').addClass('hsl')).append($('<span>').addClass('hex')).appendTo(s);
-    swatches.append(s);
+  var groupsContainer = $('#groups');
+  
+  for (var i in groups) {
+    var group = groups[i];
+    var g = $('<section>').addClass('group').attr('id', 'group-' + group.id);
+    $('<h3>').text(group.title).appendTo(g);
+    
+    var s = $('<div>').addClass('swatches');
+    
+    for (var k in group.operations) {
+      $('<div>').addClass('swatch').attr('id', 'swatch-' +group.id + '-' + k)
+        .append($('<span>').addClass('col'))
+        .append(
+          $('<div>').addClass('details')
+            .append($('<span>').addClass('rgb'))
+            .append($('<span>').addClass('hsl'))
+            .append($('<span>').addClass('hex'))
+          )
+        .appendTo(s);
+    }
+    
+    s.appendTo(g);
+    g.appendTo(groupsContainer);
+    
+    // var s = $('<div>').attr('id', 'swatch-' + i).addClass('swatch');
+    // s.append($('<span>').addClass('col'));
+    // $('<div>').addClass('details').append($('<span>').addClass('rgb')).append($('<span>').addClass('hsl')).append($('<span>').addClass('hex')).appendTo(s);
+    // swatches.append(s);
   }
 
   $('#r').val(Math.floor((Math.random() * 255) + 1));

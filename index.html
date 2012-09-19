@@ -9,8 +9,6 @@
   <body>
     <header id="header">
       <h1>Color Palette Generator</h1>
-    </header>
-    <section id="content">
       <form id="form">
         <fieldset>
           <div><label for="r">Red    </label> <input type="number" name="r" id="r" min="0" max="255"></div>
@@ -22,14 +20,18 @@
           <div><label for="s">Sat.   </label> <input type="number" name="s" id="s" min="0" max="255"></div>
           <div><label for="l">Light. </label> <input type="number" name="l" id="l" min="0" max="255"></div>
         </fieldset>
-        <div><label for="hex">Hex  </label> <input type="text" name="hex" id="hex" size="6" readonly></div>
+        <fieldset>
+          <div><label for="hex">Hex  </label> <input type="text" name="hex" id="hex" size="6" readonly></div>
+        </fieldset>
       </form>
-      
-      <div id="swatches">
+    </header>
+    <section id="content">
+      <div id="groups">
       </div>
     </section>
     <footer id="footer">
-      Footer
+      Color Palette Generator
+      &copy; 2012 Philipp Jardas
     </footer>
   </body>
 </html>
