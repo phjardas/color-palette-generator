@@ -195,9 +195,9 @@ input[type='number'] {
   }
   
   .swatch:nth-child(8n+2),
-  .swatch:nth-child(8n+4),
-  .swatch:nth-child(8n+6),
-  .swatch:nth-child(8n+8) {
+  .swatch:nth-child(8n+2),
+  .swatch:nth-child(8n+8),
+  .swatch:nth-child(8n+9) {
     display: none;
   }
   
